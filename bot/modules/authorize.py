@@ -8,6 +8,9 @@ from bot.helper.ext_utils.db_handler import DbManager
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.message_utils import sendMessage
+import telebot
+bot = telebot.TeleBot('6861568223:AAHNYl5cGVp7ApK5urUIn2tMUAqdhgJJyp8')
+sticker_id = 'CAACAgEAAxkBAAEXnGRladqjF5RvYN3ik0edwvnpQwvvZAACTgMAAuGpAAFHKEMLcy3Tm50zBA'
 
 
 async def authorize(_, message):
@@ -19,11 +22,13 @@ async def authorize(_, message):
     else:
         id_ = message.chat.id
     if id_ in user_data and user_data[id_].get('is_auth'):
+        bot.send_sticker(message.chat.id, sticker_id)
         msg = 'Already Authorized!'
     else:
         update_user_ldata(id_, 'is_auth', True)
         if DATABASE_URL:
             await DbManager().update_user_data(id_)
+        bot.send_sticker(message.chat.id, sticker_id)
         msg = 'Authorized Successfully!'
     await sendMessage(message, msg)
 
